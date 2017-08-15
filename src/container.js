@@ -3,7 +3,7 @@ const { scopePerRequest } = require('awilix-express');
 
 const config = require('../config');
 const Application = require('./app/Application');
-const { CreateUser, GetAllUsers } = require('./app/user');
+const { CreateUser, GetAllUsers, RetrieveUser, UpdateUser, DestroyUser } = require('./app/user');
 
 const Server = require('./interfaces/http/Server');
 const router = require('./interfaces/http/router');
@@ -53,7 +53,10 @@ container.registerValue({
 // Operations
 container.registerClass({
   createUser: CreateUser,
-  getAllUsers: GetAllUsers
+  getAllUsers: GetAllUsers,
+  retrieveUser: RetrieveUser,
+  updateUser: UpdateUser,
+  destroyUser: DestroyUser
 });
 
 module.exports = container;

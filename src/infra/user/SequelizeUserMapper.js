@@ -2,15 +2,15 @@ const User = require('src/domain/user/User');
 
 const SequelizeUserMapper = {
   toEntity({ dataValues }) {
-    const { id, name } = dataValues;
+    const { id, uuid, name, age } = dataValues;
 
-    return new User({ id, name });
+    return new User({ id, uuid, name, age });
   },
 
   toDatabase(survivor) {
-    const { name } = survivor;
+    const { name, age } = survivor;
 
-    return { name };
+    return { name, age };
   }
 };
 

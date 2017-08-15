@@ -15,13 +15,15 @@ describe('API :: GET /api/users', () => {
       return request().get('/api/users')
         .expect(200)
         .then(({ body }) => {
-          expect(body).to.have.lengthOf(2);
+          expect(body.data).to.have.lengthOf(2);
 
-          expect(body[0].name).to.equal('First');
-          expect(body[0]).to.have.all.keys('id', 'name');
+          expect(body.data[0].attributes.name).to.equal('First');
+          expect(Object.keys(body.data[0])).to.include('id');
+          expect(body.data[0].attributes).to.have.all.keys('uuid', 'name', 'age');
 
-          expect(body[1].name).to.equal('Second');
-          expect(body[1]).to.have.all.keys('id', 'name');
+          expect(body.data[1].attributes.name).to.equal('Second');
+          expect(Object.keys(body.data[1])).to.include('id');
+          expect(body.data[1].attributes).to.have.all.keys('uuid', 'name', 'age');
         });
     });
   });
@@ -31,7 +33,7 @@ describe('API :: GET /api/users', () => {
       return request().get('/api/users')
         .expect(200)
         .then(({ body }) => {
-          expect(body).to.have.lengthOf(0);
+          expect(body.data).to.have.lengthOf(0);
         });
     });
   });

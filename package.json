@@ -10,6 +10,7 @@
   "scripts": {
     "start": "node cluster.js",
     "dev": "cross-env NODE_PATH=. NODE_ENV=development nodemon",
+    "dev-debug": "cross-env NODE_PATH=. NODE_ENV=development nodemon --debug",
     "test": "cross-env NODE_PATH=. NODE_ENV=test mocha",
     "coverage": "cross-env NODE_PATH=. NODE_ENV=test istanbul cover node_modules/mocha/bin/_mocha",
     "lint": "eslint {src,test,config}/**/*.js",
@@ -34,6 +35,7 @@
     "express": "^4.15.2",
     "express-status-monitor": "^0.1.9",
     "http-status": "^1.0.1",
+    "jsonapi-serializer": "^3.5.5",
     "log4js": "^1.1.1",
     "method-override": "^2.3.7",
     "morgan": "^1.8.1",

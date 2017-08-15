@@ -1,20 +1,18 @@
 const Operation = require('src/app/Operation');
 
-class GetAllUsers extends Operation {
+class DestroyUser extends Operation {
   constructor({ usersRepository }) {
     super();
     this.usersRepository = usersRepository;
   }
 
-  execute() {
+  execute(uuid) {
     const { SUCCESS, ERROR } = this.outputs;
-
+    
     this.usersRepository
-      .getAll({
-        attributes: ['id', 'uuid', 'name', 'age']
-      })
-      .then((users) => {
-        this.emit(SUCCESS, users);
+      .destroy(uuid)
+      .then(() => {
+        this.emit(SUCCESS);
       })
       .catch((error) => {
         this.emit(ERROR, error);
@@ -22,6 +20,6 @@ class GetAllUsers extends Operation {
   }
 }
 
-GetAllUsers.setOutputs(['SUCCESS', 'ERROR']);
+DestroyUser.setOutputs(['SUCCESS', 'ERROR']);
 
-module.exports = GetAllUsers;
+module.exports = DestroyUser;

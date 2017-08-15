@@ -1,6 +1,7 @@
 'use strict';
 
-const dataFaker = require('src/infra/support/dataFaker');
+const path = require('path');
+const dataFaker = require(path.join(__dirname, '../../../../src/infra/support/dataFaker'));
 
 module.exports = {
   up: function (queryInterface) {
@@ -8,7 +9,9 @@ module.exports = {
 
     for(let i = 0; i < 20; i++) {
       testUsers.push({
+        uuid: dataFaker.guid(),
         name: dataFaker.name(),
+        age: dataFaker.age(),
         createdAt: new Date(),
         updatedAt: new Date()
       });

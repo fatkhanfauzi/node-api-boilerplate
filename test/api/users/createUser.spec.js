@@ -7,13 +7,15 @@ describe('API :: POST /api/users', () => {
       return request()
         .post('/api/users')
         .send({
-          name: 'New User'
+          name: 'New User',
+          age: 20
         })
         .expect(201)
         .then(({ body }) => {
-          expect(body.id).to.exist;
-          expect(body.name).to.equal('New User');
-          expect(body).to.have.all.keys('id', 'name');
+          expect(body.data.id).to.exist;
+          expect(body.data.attributes.name).to.equal('New User');
+          expect(body.data.attributes.age).to.equal(20);
+          expect(body.data.attributes).to.have.all.keys('uuid', 'name', 'age');
         });
     });
   });

@@ -1,20 +1,18 @@
 const Operation = require('src/app/Operation');
 
-class GetAllUsers extends Operation {
+class RetrieveUser extends Operation {
   constructor({ usersRepository }) {
     super();
     this.usersRepository = usersRepository;
   }
 
-  execute() {
+  execute(uuid) {
     const { SUCCESS, ERROR } = this.outputs;
 
     this.usersRepository
-      .getAll({
-        attributes: ['id', 'uuid', 'name', 'age']
-      })
-      .then((users) => {
-        this.emit(SUCCESS, users);
+      .retrieve(uuid)
+      .then((user) => {
+        this.emit(SUCCESS, user);
       })
       .catch((error) => {
         this.emit(ERROR, error);
@@ -22,6 +20,6 @@ class GetAllUsers extends Operation {
   }
 }
 
-GetAllUsers.setOutputs(['SUCCESS', 'ERROR']);
+RetrieveUser.setOutputs(['SUCCESS', 'ERROR']);
 
-module.exports = GetAllUsers;
+module.exports = RetrieveUser;
