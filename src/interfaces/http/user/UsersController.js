@@ -10,6 +10,7 @@ const index = (req, res, next) => {
   getAllUsers
     .on(SUCCESS, (users) => {
       const formatterUsers = UserSerializer.serialize(users);
+      console.log('test')
       res.status(Status.OK).send(formatterUsers);
     })
     .on(ERROR, next);
