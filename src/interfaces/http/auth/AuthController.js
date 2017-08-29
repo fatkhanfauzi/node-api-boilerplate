@@ -6,14 +6,14 @@ const userSerializer = require(path.join(__dirname, '../serializers/user'));
 
 const signIn = (req, res, next) => {
   const { signIn } = req;
-  const { SUCCESS, ERROR, UNAUTHORIZED } = signIn.outputs;
+  const { SUCCESS, ERROR, BAD_REQUEST } = signIn.outputs;
 
   signIn
     .on(SUCCESS, (user) => {
       const formattedUser = userSerializer.serialize(user);
       res.status(Status.OK).send(formattedUser);
     })
-    .on(UNAUTHORIZED, next)
+    .on(BAD_REQUEST, next)
     .on(ERROR, next);
 
   signIn.execute(req.body.user);

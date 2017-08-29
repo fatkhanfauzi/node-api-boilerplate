@@ -32,6 +32,18 @@ module.exports = (err, req, res, next) => { // eslint-disable-line no-unused-var
   }
 
   /**
+   * define sign in error response
+   * @param  {[object]} err [given error object]
+   * @return {[function]}     [response]
+   */
+  const buildSignInErrorResponse = (err) => {
+    return res.status(Status.BAD_REQUEST).json({
+      type: 'SignInFailed',
+      details: err.message
+    });
+  }
+
+  /**
    * define internal server error response
    * @param  {[object]} err [given error object]
    * @return {[function]}     [response]
@@ -39,7 +51,7 @@ module.exports = (err, req, res, next) => { // eslint-disable-line no-unused-var
   const buildInternalServerErrorResponse = (err) => {
     return res.status(Status.INTERNAL_SERVER_ERROR).json({
       type: 'InternalServerError',
-      message: err.message,
+      message: err.message || err,
       stack: err.stack
     });
   }
@@ -53,10 +65,11 @@ module.exports = (err, req, res, next) => { // eslint-disable-line no-unused-var
     const responses = {
       'UNAUTHORIZED': buildUnauthorizedResponse,
       'VALIDATION_ERROR': buildValidationErrorResponse,
+      'BAD_REQUEST': buildSignInErrorResponse,
       'INTERNAL_SERVER_ERROR': buildInternalServerErrorResponse
     }
     return (responses[err.type] || responses['INTERNAL_SERVER_ERROR'])(err)
   }
-  debugger;
+
   errorResponse(err);
 };

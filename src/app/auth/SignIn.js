@@ -9,7 +9,7 @@ class SignIn extends Operation {
   }
 
   execute(signInData) {
-    const { SUCCESS, ERROR, UNAUTHORIZED } = this.outputs;
+    const { SUCCESS, ERROR, BAD_REQUEST } = this.outputs;
 
     this.usersRepository
       .retrieveBy('email', signInData.email)
@@ -20,9 +20,12 @@ class SignIn extends Operation {
             user['token'] = token
             this.emit(SUCCESS, user);
           } else {
-            this.emit(UNAUTHORIZED, { type: 'UNAUTHORIZED', message: 'unauthorized' });
+            this.emit(BAD_REQUEST, { type: 'BAD_REQUEST', message: 'email and password combination is not valid' });
           }
         })
+        .catch((error) => {
+          this.emit(BAD_REQUEST, { type: 'BAD_REQUEST', message: 'email and password combination is not valid' });
+        });
       })
       .catch((error) => {
         this.emit(ERROR, error);
@@ -30,6 +33,6 @@ class SignIn extends Operation {
   }
 }
 
-SignIn.setOutputs(['SUCCESS', 'ERROR', 'UNAUTHORIZED']);
+SignIn.setOutputs(['SUCCESS', 'ERROR', 'UNAUTHORIZED', 'BAD_REQUEST']);
 
 module.exports = SignIn;
