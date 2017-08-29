@@ -11,7 +11,19 @@ class GetAllUsers extends Operation {
 
     this.usersRepository
       .getAll({
-        attributes: ['id', 'uuid', 'name', 'age']
+        attributes: [
+          'id',
+          'uuid',
+          'firstName',
+          'lastName',
+          'userName',
+          'email',
+          'status',
+          'age',
+          'lastLoginAt',
+          'createdAt',
+          'updatedAt'
+        ]
       })
       .then((users) => {
         this.emit(SUCCESS, users);

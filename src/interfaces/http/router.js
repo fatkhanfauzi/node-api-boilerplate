@@ -5,8 +5,9 @@ const bodyParser = require('body-parser');
 const compression = require('compression');
 const methodOverride = require('method-override');
 const controller = require('./utils/createControllerRoutes');
+const passport = require('passport');
 
-module.exports = ({ config, containerMiddleware, loggerMiddleware, errorHandler }) => {
+module.exports = ({ config, containerMiddleware, loggerMiddleware, errorHandler, authService }) => {
   const router = Router();
 
   /* istanbul ignore if */
@@ -26,6 +27,7 @@ module.exports = ({ config, containerMiddleware, loggerMiddleware, errorHandler 
     .use(cors())
     .use(bodyParser.json())
     .use(compression())
+    .use(authService.initialize())
     .use(containerMiddleware);
 
   /*
@@ -38,6 +40,7 @@ module.exports = ({ config, containerMiddleware, loggerMiddleware, errorHandler 
    */
 
   apiRouter.use('/users', controller('user/UsersController'));
+  apiRouter.use('/auth', controller('auth/AuthController'));
 
   router.use('/api', apiRouter);
 

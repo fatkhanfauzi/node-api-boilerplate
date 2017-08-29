@@ -7,11 +7,13 @@ const ENV = process.env.NODE_ENV || 'development';
 
 const envConfig = require(path.join(__dirname, 'environments', ENV));
 const dbConfig = loadDbConfig();
+const jwtConfig = require('./jsonWebToken');
 
 const config = Object.assign({
   [ENV]: true,
   env: ENV,
-  db: dbConfig
+  db: dbConfig,
+  jwt: jwtConfig
 }, envConfig);
 
 module.exports = config;

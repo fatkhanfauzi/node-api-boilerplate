@@ -1,7 +1,9 @@
+const path = require('path');
 const { Router } = require('express');
 const { inject } = require('awilix-express');
 const Status = require('http-status');
-const UserSerializer = require('./serializers/user');
+const userSerializer = require(path.join(__dirname, '../serializers/user'));
+const container = require(path.join(__dirname, '../../../../src/container'));
 
 const index = (req, res, next) => {
   const { getAllUsers } = req;
@@ -9,8 +11,8 @@ const index = (req, res, next) => {
 
   getAllUsers
     .on(SUCCESS, (users) => {
-      const formatterUsers = UserSerializer.serialize(users);
-      res.status(Status.OK).send(formatterUsers);
+      const formattedUsers = userSerializer.serialize(users);
+      res.status(Status.OK).send(formattedUsers);
     })
     .on(ERROR, next);
 
@@ -23,18 +25,13 @@ const create = (req, res, next) => {
 
   createUser
     .on(SUCCESS, (user) => {
-      const formattedUser = UserSerializer.serialize(user);
+      const formattedUser = userSerializer.serialize(user);
       res.status(Status.CREATED).json(formattedUser);
     })
-    .on(VALIDATION_ERROR, (error) => {
-      res.status(Status.BAD_REQUEST).json({
-        type: 'ValidationError',
-        details: error.details
-      });
-    })
+    .on(VALIDATION_ERROR, next)
     .on(ERROR, next);
 
-  createUser.execute(req.body);
+  createUser.execute(req.body.user);
 }
 
 const retrieve = (req, res, next) => {
@@ -43,7 +40,7 @@ const retrieve = (req, res, next) => {
 
   retrieveUser
     .on(SUCCESS, (user) => {
-      const formattedUser = UserSerializer.serialize(user);
+      const formattedUser = userSerializer.serialize(user);
       res.status(Status.OK).send(formattedUser);
     })
     .on(ERROR, next);
@@ -57,18 +54,13 @@ const update = (req, res, next) => {
 
   updateUser
     .on(SUCCESS, (user) => {
-      const formattedUser = UserSerializer.serialize(user);
+      const formattedUser = userSerializer.serialize(user);
       res.status(Status.OK).json(formattedUser);
     })
-    .on(VALIDATION_ERROR, (error) => {
-      res.status(Status.BAD_REQUEST).json({
-        type: 'ValidationError',
-        details: error.details
-      });
-    })
+    .on(VALIDATION_ERROR, next)
     .on(ERROR, next);
 
-  updateUser.execute(req.params.uuid, req.body);
+  updateUser.execute(req.params.uuid, req.body.user);
 }
 
 const destroy = (req, res, next) => {
@@ -87,12 +79,13 @@ const destroy = (req, res, next) => {
 const UsersController = {
   get router() {
     const router = Router();
+    const authService = container.resolve('authService')
 
-    router.get('/', inject('getAllUsers'), this.index);
-    router.post('/', inject('createUser'), this.create);
-    router.get('/:uuid', inject('retrieveUser'), this.retrieve);
-    router.put('/:uuid', inject('updateUser'), this.update);
-    router.delete('/:uuid', inject('destroyUser'), this.destroy);
+    router.get('/', authService.authenticate(), inject('getAllUsers'), this.index);
+    router.post('/', authService.authenticate(), inject('createUser'), this.create);
+    router.get('/:uuid', authService.authenticate(), inject('retrieveUser'), this.retrieve);
+    router.put('/:uuid', authService.authenticate(), inject('updateUser'), this.update);
+    router.delete('/:uuid', authService.authenticate(), inject('destroyUser'), this.destroy);
 
     return router;
   },

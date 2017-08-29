@@ -1,9 +1,10 @@
-const { createContainer, Lifetime } = require('awilix');
+const { createContainer, asValue, asFunction, Lifetime } = require('awilix');
 const { scopePerRequest } = require('awilix-express');
 
 const config = require('../config');
 const Application = require('./app/Application');
 const { CreateUser, GetAllUsers, RetrieveUser, UpdateUser, DestroyUser } = require('./app/user');
+const { SignIn } = require('./app/auth');
 
 const Server = require('./interfaces/http/Server');
 const router = require('./interfaces/http/router');
@@ -13,6 +14,7 @@ const devErrorHandler = require('./interfaces/http/errors/devErrorHandler');
 
 const logger = require('./infra/logging/logger');
 const SequelizeUsersRepository = require('./infra/user/SequelizeUsersRepository');
+const { AuthService } = require('./interfaces/http/services');
 const { database, User: UserModel } = require('./infra/database/models');
 
 const container = createContainer();
@@ -44,6 +46,11 @@ container.registerClass({
   usersRepository: [SequelizeUsersRepository, { lifetime: Lifetime.SINGLETON }]
 });
 
+// Interface Services
+container.registerClass({
+  authService: [AuthService, { lifetime: Lifetime.SINGLETON }]
+});
+
 // Database
 container.registerValue({
   database,
@@ -56,7 +63,8 @@ container.registerClass({
   getAllUsers: GetAllUsers,
   retrieveUser: RetrieveUser,
   updateUser: UpdateUser,
-  destroyUser: DestroyUser
+  destroyUser: DestroyUser,
+  signIn: SignIn
 });
 
 module.exports = container;

@@ -8,9 +8,9 @@ class SequelizeUsersRepository {
   getAll(...args) {
     return this.UserModel
       .findAll(...args)
-      .then((users) => 
-        users.map(UserMapper.toEntity)
-      );
+      .then((users) => {
+        return users.map(UserMapper.toEntity)
+      });
   }
 
   retrieve(uuid) {
@@ -18,7 +18,29 @@ class SequelizeUsersRepository {
       .findOne({
         where: {uuid: uuid}
       })
-      .then((user) => UserMapper.toEntity(user));
+      .then((user) => {
+        return UserMapper.toEntity(user)
+      });
+  }
+
+  retrieveBy(attr, value) {
+    return this.UserModel
+      .findOne({
+        where: {[attr]: value}
+      })
+      .then((user) => {
+        return UserMapper.toEntity(user)
+      });
+  }
+
+  validPassword(uuid, password) {
+    return this.UserModel
+      .findOne({
+        where: {uuid: uuid}
+      })
+      .then((user) => {
+        return user.validPassword(password)
+      });
   }
 
   add(user) {
@@ -33,7 +55,9 @@ class SequelizeUsersRepository {
 
     return this.UserModel
       .create(UserMapper.toDatabase(user))
-      .then(UserMapper.toEntity);
+      .then((user) => {
+        return UserMapper.toEntity(user)
+      });
   }
 
   update(uuid, user) {
@@ -47,14 +71,13 @@ class SequelizeUsersRepository {
     }
 
     return this.UserModel
-      .update(
-        UserMapper.toDatabase(user)
-      , {
-        where: {uuid: uuid}
+      .update(UserMapper.toDatabase(user), {
+        where: {uuid: uuid},
+        individualHooks: true
       })
-      .then(() =>
-        this.retrieve(uuid)
-      );
+      .then(() => {
+        return this.retrieve(uuid)
+      });
   }
 
   destroy(uuid) {

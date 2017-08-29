@@ -13,11 +13,33 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.STRING
       },
-      name: {
+      firstName: {
         type: Sequelize.STRING
+      },
+      lastName: {
+        type: Sequelize.STRING
+      },
+      userName: {
+        type: Sequelize.STRING
+      },
+      email: {
+        type: Sequelize.STRING
+      },
+      password: {
+        type: Sequelize.STRING
+      },
+      token: {
+        type: Sequelize.STRING
+      },
+      status: {
+        type: Sequelize.ENUM('active', 'inactive')
       },
       age: {
         type: Sequelize.INTEGER
+      },
+      lastLoginAt: {
+        allowNull: true,
+        type: Sequelize.DATE
       },
       createdAt: {
         allowNull: false,
